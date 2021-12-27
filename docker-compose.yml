@@ -4,7 +4,7 @@ services:
   db:
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: password
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
       MYSQL_USER: user
       MYSQL_DATABASE: codetest
       MYSQL_PASSWORD: password
@@ -21,7 +21,8 @@ services:
       - 3333:8888
 
   rails:
-    build: ./rails
+    build:
+      context: rails
     depends_on:
       - db
     environment:
@@ -31,4 +32,4 @@ services:
       RAILS_DB_PASSWORD: password # MYSQL_PASSWORDと一致させる
       RAILS_ENV: development
     ports:
-      - 8888:3000
+      - 8888:8888
