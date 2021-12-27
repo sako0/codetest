@@ -15,7 +15,13 @@ services:
     hostname: db
 
   app:
-    build: .
+    build:
+      context: app
+    ports:
+      - 3333:8888
+
+  rails:
+    build: ./rails
     depends_on:
       - db
     environment:
@@ -25,4 +31,4 @@ services:
       RAILS_DB_PASSWORD: password # MYSQL_PASSWORDと一致させる
       RAILS_ENV: development
     ports:
-      - 8888:8888
+      - 8888:3000

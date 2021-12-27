@@ -1,24 +1,23 @@
-# README
+# codetest
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## 課題
 
-Things you may want to cover:
+テストがパスするようにDockerイメージを作成してください。
 
-* Ruby version
+テストはGitHub Actionsで実行されています。
 
-* System dependencies
+テストコード(main_test.go)を変更する以外はどのような手を使っても構いません。制限時間もありません。
 
-* Configuration
+サンプルとしてmain.goを配置していますが、言語の制約も無いのでGo言語以外で実装しても構いません。
 
-* Database creation
+## プロジェクト概要
 
-* Database initialization
+ユーザーごとに「取引(Transaction)」（金額と商品説明からなる情報）を登録することができるサービスです。
 
-* How to run the test suite
+ユーザーごとに登録可能な取引の金額累計に上限(1000)があり、それを超えて登録しようとすると特定のレスポンスステータスを返してエラーになる仕様です。
 
-* Services (job queues, cache servers, search engines, etc.)
+RDBMSとしてMySQLを使う想定でdbディレクトリ以下にスキーマを置いています。
 
-* Deployment instructions
+## 開発
 
-* ...
+`docker-compose up`でダミーのアプリケーションコンテナとスキーマが反映されたMySQLを起動できます。
