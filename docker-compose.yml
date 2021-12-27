@@ -1,0 +1,28 @@
+version: "3.8"
+
+services:
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_USER: user
+      MYSQL_DATABASE: codetest
+      MYSQL_PASSWORD: password
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+    hostname: db
+
+  app:
+    build: .
+    depends_on:
+      - db
+    environment:
+      RAILS_DB_HOST: db # データベースコンテナ名と一致させる
+      RAILS_DB_NAME: codetest # MYSQL_DATABASEと一致させる
+      RAILS_DB_USER: user # MYSQL_USERと一致させる
+      RAILS_DB_PASSWORD: password # MYSQL_PASSWORDと一致させる
+      RAILS_ENV: development
+    ports:
+      - 8888:8888
