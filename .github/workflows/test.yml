@@ -6,30 +6,11 @@ jobs:
   test:
     runs-on: ubuntu-20.04
 
-    services:
-      db:
-        image: mysql:5.7
-        ports:
-          - 3306:3306
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: 1
-
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Go
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.16
-
       - name: Set up MySQL
-        run: mysql -h 127.0.0.1 -u root
+        run: docker-compose up -d
 
       - name: Build app image
-        run: docker image build --tag app app
-
-      - name: Run app container
-        run: docker container run -d -p 0.0.0.0:3333:8888 app
-
-      - name: Test
-        run: go test ./...
+        run: docker-compose exec app bash go test ./...
