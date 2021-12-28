@@ -19,6 +19,8 @@ services:
       context: app
     ports:
       - 3333:8888
+    depends_on:
+      - db
 
   rails:
     build:
