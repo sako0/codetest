@@ -21,7 +21,7 @@ func (c Controller) GetTransactions(db *sql.DB) http.HandlerFunc {
 		}
 		defer rows.Close()
 		for rows.Next() {
-			err := rows.Scan(&transaction.ID, &transaction.UserId, &transaction.Amount, &transaction.Description)
+			err := rows.Scan(&transaction.ID, &transaction.UserID, &transaction.Amount, &transaction.Description)
 			if err != nil {
 				log.Println(err)
 			}
@@ -39,7 +39,7 @@ func (c Controller) AddTransaction(db *sql.DB) http.HandlerFunc {
 		log.Println(transaction)
 		var errorObj models.Error
 		json.NewDecoder(r.Body).Decode(&transaction)
-		if transaction.UserId < 0 {
+		if transaction.UserID < 0 {
 			errorObj.Message = "\"UserId\" が指定されていません"
 			utils.Respond(w, http.StatusBadRequest, errorObj)
 			return
@@ -62,7 +62,7 @@ func (c Controller) AddTransaction(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		defer insert.Close()
-		result, err := insert.Exec(transaction.UserId, transaction.Description, transaction.Amount)
+		result, err := insert.Exec(transaction.UserID, transaction.Description, transaction.Amount)
 		if err != nil {
 			log.Println(err)
 			errorObj.Message = "transactionの実行ができませんでした。"
