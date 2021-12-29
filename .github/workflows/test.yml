@@ -28,7 +28,7 @@ jobs:
         run: sudo apt-get update -qq && sudo apt-get install --no-install-recommends -y default-mysql-client
 
       - name: Set up MySQL
-        run: mysql -h 127.0.0.1 -u root < ./db/init.sql
+        run: mysql -h 127.0.0.1 -u raaaaaaaaaaaaaaaaaaaaaaaaaaoot < ./db/init.sql
 
       - name: Build app image
         run: docker image build --tag app .
