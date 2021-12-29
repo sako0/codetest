@@ -20,8 +20,6 @@ func main() {
 	}
 	router := mux.NewRouter()
 	controller := controllers.Controller{}
-	router.HandleFunc("/users", controller.GetUsers(db)).Methods("GET")
-	router.HandleFunc("/transactions", controller.GetTransactions(db)).Methods("GET")
 	router.HandleFunc("/transactions", controller.AddTransaction(db)).Methods("POST")
 
 	log.Println("Server up on port 8888...")
