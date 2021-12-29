@@ -12,7 +12,8 @@ services:
     hostname: db
 
   app:
-    build:
-      context: app
+    build: .
+    volumes:
+      - ./app:/go/app
     ports:
       - 8888:8888

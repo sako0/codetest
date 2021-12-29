@@ -1,11 +1,10 @@
 FROM golang:1.16
 
-COPY . /go/app
+COPY app /go/app
+COPY go.mod /go
+COPY go.sum /go
 
 WORKDIR /go
-
-RUN mv /go/app/go.mod /go
-RUN mv /go/app/go.sum /go
 
 ENV GOPATH=/go/app
 
