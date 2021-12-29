@@ -21,6 +21,7 @@ func main() {
 	router := mux.NewRouter()
 	router.HandleFunc("/users", controller.GetUsers(db)).Methods("GET")
 	router.HandleFunc("/transactions", controller.GetTransactions(db)).Methods("GET")
+	router.HandleFunc("/transactions", controller.AddTransaction(db)).Methods("POST")
 	log.Println("Server up on port 8888...")
 	log.Fatal(http.ListenAndServe(":8888", router))
 }
