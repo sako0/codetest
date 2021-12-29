@@ -63,15 +63,26 @@ func (c Controller) AddTransaction(db *sql.DB) http.HandlerFunc {
 		}
 		defer rows.Close()
 		totalAmount := 0
-		amount := transaction.Amount
 		for rows.Next() {
-			err := rows.Scan(&transaction.ID, &transaction.UserID, &transaction.Amount, &transaction.Description)
+			var id int
+			var user_id int
+			var amount int
+			var description string
+			// カラムを変数に格納していく
+			err := rows.Scan(&id, &user_id, &amount, &description)
 			if err != nil {
 				log.Println(err)
 				errorObj.Message = "Server error"
 				return
 			}
 			totalAmount += amount
+			log.Println(totalAmount)
+		}
+		err = rows.Err()
+		if err != nil {
+			log.Println(err)
+			errorObj.Message = "rows.Next()後のエラー"
+			return
 		}
 		if totalAmount+transaction.Amount > 1000 {
 			log.Println(err)
