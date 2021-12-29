@@ -12,10 +12,7 @@ services:
     hostname: db
 
   app:
-    build: .
-    volumes:
-      - ./app:/go/app
-    environment:
-      - "GOPATH=/go/app"
+    build:
+      context: app
     ports:
       - 8888:8888
