@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	// github actionsではdbがコンテナではないので、環境変数で指定しなおす
+	// github actionsではdbがコンテナではないので、"172.18.0.1"を環境変数で指定しなおす
 	db, err := sql.Open("mysql", "root@tcp("+os.Getenv("DB_HOST")+")/codetest")
 	if err != nil {
 		log.Fatal(err)
