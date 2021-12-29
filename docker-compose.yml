@@ -13,7 +13,7 @@ services:
 
   app:
     build: .
-    volumes:
-      - ./app:/go/app
+    # volumes:
+    #   - ./app:/go/app
     ports:
       - 8888:8888
