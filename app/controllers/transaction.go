@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
 	"codetest-docker/app/models"
 	"codetest-docker/app/utils"
@@ -57,7 +58,7 @@ func (c Controller) AddTransaction(db *sql.DB) http.HandlerFunc {
 		insert, err := db.Prepare("INSERT INTO transactions (user_id, description, amount) values(?,?,?)")
 		if err != nil {
 			log.Println(err)
-			errorObj.Message = "transactionの準備ができませんでした。"
+			errorObj.Message = "transactionの準備ができませんでした。" + os.Getenv("DB_HOST")
 			utils.Respond(w, http.StatusInternalServerError, errorObj)
 			return
 		}
