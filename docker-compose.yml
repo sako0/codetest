@@ -13,6 +13,8 @@ services:
 
   app:
     build: .
+    environment:
+      DB_HOST: "db"
     # volumes:
     #   - ./app:/go/app
     ports:

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"log"
 	"net/http"
+	"os"
 
 	"codetest-docker/app/controllers"
 
@@ -13,7 +14,7 @@ import (
 
 func main() {
 	// github actionsではdbがコンテナではないので、環境変数で指定しなおす
-	db, err := sql.Open("mysql", "root@tcp(db:3306)/codetest")
+	db, err := sql.Open("mysql", "root@tcp("+os.Getenv("DB_HOST")+":3306)/codetest")
 	if err != nil {
 		log.Fatal(err)
 	}
