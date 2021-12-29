@@ -31,7 +31,7 @@ jobs:
         run: mysql -h 127.0.0.1 -u root < ./db/init.sql
 
       - name: Build app image
-        run: docker image build app
+        run: docker image build --tag app .
 
       - name: Run app container
         run: docker container run -d -p 0.0.0.0:8888:8888 app
