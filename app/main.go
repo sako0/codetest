@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	db, err := sql.Open("mysql", "root@tcp(127.0.0.1)/codetest")
+	db, err := sql.Open("mysql", "root@tcp(db:3306)/codetest")
 	if err != nil {
 		log.Fatal(err)
 	}
