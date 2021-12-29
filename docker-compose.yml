@@ -14,7 +14,7 @@ services:
   app:
     build: .
     environment:
-      DB_HOST: "db"
+      DB_HOST: "db:3306"
     # volumes:
     #   - ./app:/go/app
     ports:

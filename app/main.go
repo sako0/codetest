@@ -14,7 +14,7 @@ import (
 
 func main() {
 	// github actionsではdbがコンテナではないので、環境変数で指定しなおす
-	db, err := sql.Open("mysql", "root@tcp("+os.Getenv("DB_HOST")+":3306)/codetest")
+	db, err := sql.Open("mysql", "root@tcp("+os.Getenv("DB_HOST")+")/codetest")
 	if err != nil {
 		log.Fatal(err)
 	}
