@@ -31,6 +31,7 @@ func (c Controller) AddTransaction(db *sql.DB) http.HandlerFunc {
 			utils.Respond(w, http.StatusBadRequest, errorObj)
 			return
 		}
+
 		rows, err := db.Query("select * from transactions where user_id=?", transaction.UserID)
 		if err != nil && err != sql.ErrNoRows {
 			log.Println(err)
@@ -39,13 +40,14 @@ func (c Controller) AddTransaction(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		defer rows.Close()
+
 		totalAmount := 0
 		for rows.Next() {
 			var id int
 			var user_id int
 			var amount int
 			var description string
-			// カラムを変数に格納していく
+			// カラムを変数に格納していく https://golang.shop/post/go-databasesql-04-retrieving-ja/
 			err := rows.Scan(&id, &user_id, &amount, &description)
 			if err != nil {
 				log.Println(err)
@@ -53,7 +55,6 @@ func (c Controller) AddTransaction(db *sql.DB) http.HandlerFunc {
 				return
 			}
 			totalAmount += amount
-			log.Println(totalAmount)
 		}
 		err = rows.Err()
 		if err != nil {
@@ -67,15 +68,7 @@ func (c Controller) AddTransaction(db *sql.DB) http.HandlerFunc {
 			utils.Respond(w, http.StatusPaymentRequired, errorObj)
 			return
 		}
-		insert, err := db.Prepare("INSERT INTO transactions (user_id, description, amount) values(?,?,?)")
-		if err != nil {
-			log.Println(err)
-			errorObj.Message = "transactionの準備ができませんでした。"
-			utils.Respond(w, http.StatusInternalServerError, errorObj)
-			return
-		}
-		defer insert.Close()
-		result, err := insert.Exec(transaction.UserID, transaction.Description, transaction.Amount)
+		result, err := db.Exec("INSERT INTO transactions (user_id, description, amount) values(?, ?, ?)", transaction.UserID, transaction.Description, transaction.Amount)
 		if err != nil {
 			log.Println(err)
 			errorObj.Message = "transactionの実行ができませんでした。"
@@ -89,8 +82,9 @@ func (c Controller) AddTransaction(db *sql.DB) http.HandlerFunc {
 			utils.Respond(w, http.StatusInternalServerError, errorObj)
 			return
 		}
-		log.Println("lastInsertID=" + fmt.Sprint(lastInsertID))
+		log.Println("lastInsertID=" + fmt.Sprint(lastInsertID) + ", totalAmount=" + fmt.Sprint(totalAmount))
 		errorObj.Message = "作成しました"
 		utils.Respond(w, http.StatusCreated, errorObj)
+
 	}
 }
