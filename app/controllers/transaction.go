@@ -49,8 +49,8 @@ func (c Controller) AddTransaction(db *sql.DB) http.HandlerFunc {
 			return
 		}
 		defer rows.Close()
-		totalAmount := 0
 		// 同じuser_idのtransactionsのamountを足していく
+		totalAmount := 0
 		for rows.Next() {
 			var id int
 			var user_id int
