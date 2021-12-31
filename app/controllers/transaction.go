@@ -23,7 +23,7 @@ func (c Controller) AddTransaction(db *sql.DB) http.HandlerFunc {
 			errorObj.Message = "トランザクション開始できませんでした。"
 			utils.Respond(w, http.StatusBadRequest, errorObj)
 		}
-
+		// jsonからparamを受け取りバリデーションを行う
 		json.NewDecoder(r.Body).Decode(&transaction)
 		if transaction.UserID < 0 {
 			errorObj.Message = "\"UserId\" が指定されていません"
@@ -50,6 +50,7 @@ func (c Controller) AddTransaction(db *sql.DB) http.HandlerFunc {
 		}
 		defer rows.Close()
 		totalAmount := 0
+		// 同じuser_idのtransactionsのamountを足していく
 		for rows.Next() {
 			var id int
 			var user_id int
@@ -70,6 +71,7 @@ func (c Controller) AddTransaction(db *sql.DB) http.HandlerFunc {
 			errorObj.Message = "rows.Next()後のエラー"
 			return
 		}
+		// 同じuser_idのtransactionsのamountの合計値が規定値を超えていた場合エラーを吐くようにする
 		if totalAmount+transaction.Amount > 1000 {
 			log.Println(err)
 			errorObj.Message = "amountが1000以上です。登録はできません。"
@@ -88,35 +90,35 @@ func (c Controller) AddTransaction(db *sql.DB) http.HandlerFunc {
 			lastRowTransactionId = 0
 		}
 
-		// https://blog.suganoo.net/entry/2019/01/25/190200
+		// レコードの追加(現時点で最新のレコードのIDを指定して追加) https://blog.suganoo.net/entry/2019/01/25/190200
 		transaction.ID = lastRowTransactionId + 1
 		log.Println(transaction.ID)
 		result, err := tx.Exec("INSERT INTO transactions (id, user_id, description, amount) values(?, ?, ?, ?)", transaction.ID, transaction.UserID, transaction.Description, transaction.Amount)
 		if err != nil {
-			errorObj.Message = "execエラー"
+			errorObj.Message = "INSERT時にエラーが発生しました。"
 			log.Println(err)
 			utils.Respond(w, http.StatusPaymentRequired, errorObj)
 			return
 		}
-		lastInsertID, insertErr := result.LastInsertId()
+		lastInsertID, insertErr := result.LastInsertId() // INSERTした行のIDを取得する
 		if insertErr != nil {
 			errorObj.Message = "lastInsertIdの取得エラーです"
 			log.Println(err)
 			utils.Respond(w, http.StatusPaymentRequired, errorObj)
 			return
 		}
-		// https://sourjp.github.io/posts/go-db/
+		// 現時点で最新のレコードのID+1のレコードだった場合のみ追加ができる https://sourjp.github.io/posts/go-db/
 		if lastRowTransactionId+1 != int(lastInsertID) {
 			tx.Rollback()
 			log.Println(err)
 			log.Println("lastInsertID=" + fmt.Sprint(lastInsertID) + ", totalAmount=" + fmt.Sprint(totalAmount) + ", last_id=" + fmt.Sprint(lastRowTransactionId))
-			errorObj.Message = "同時に複数回の登録はできません。"
+			errorObj.Message = "レコードが同時に登録されました。再度実行してください。"
 			utils.Respond(w, http.StatusPaymentRequired, errorObj)
 			return
 		} else {
 			tx.Commit()
 			log.Println("lastInsertID=" + fmt.Sprint(lastInsertID) + ", totalAmount=" + fmt.Sprint(totalAmount) + ", last_id=" + fmt.Sprint(lastRowTransactionId))
-			errorObj.Message = "作成しました"
+			errorObj.Message = "レコードを作成しました"
 			utils.Respond(w, http.StatusCreated, errorObj)
 		}
 	}
